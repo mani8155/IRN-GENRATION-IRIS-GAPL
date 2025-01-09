@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+{% load static %}
+<html
+        lang="en"
+        class="light-style customizer-hide"
+        dir="ltr"
+        data-theme="theme-default"
+        data-assets-path="{% static '/assets/' %}"
+        data-template="vertical-menu-template-free"
+>
+<head>
+    <meta charset="utf-8"/>
+    <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
+    />
+
+    <title>IRIS</title>
+
+    <meta name="description" content=""/>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% static '/assets/img/favicon/favicon.ico' %}"/>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link
+            href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+            rel="stylesheet"
+    />
+
+    <!-- Icons. Uncomment required icon fonts -->
+    <link rel="stylesheet" href="{% static '/assets/vendor/fonts/boxicons.css' %}"/>
+
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="{% static '/assets/vendor/css/core.css' %}" class="template-customizer-core-css"/>
+    <link rel="stylesheet" href="{% static '/assets/vendor/css/theme-default.css' %}"
+          class="template-customizer-theme-css"/>
+    <link rel="stylesheet" href="{% static '/assets/css/demo.css' %}"/>
+
+    <!-- Vendors CSS -->
+    <link rel="stylesheet" href="{% static '/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css' %}"/>
+
+    <!-- Page CSS -->
+    <!-- Page -->
+    <link rel="stylesheet" href="{% static '/assets/vendor/css/pages/page-auth.css' %}"/>
+    <!-- Helpers -->
+    <script src="{% static '/assets/vendor/js/helpers.js' %}"></script>
+
+    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
+    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
+    <script src="{% static '/assets/js/config.js' %}"></script>
+
+      <link href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+
+      <style>
+          #example_filter {
+              padding-right: 20px;
+          }
+
+          #example_length {
+              padding-left: 20px;
+          }
+
+          #example_info {
+              padding-left: 20px;
+          }
+
+          .pagination {
+              padding-right: 20px;
+          }
+
+
+      </style>
+
+
+
+</head>
+
+
+<body>
+<!-- Content -->
+
+<h4 class="fw-bold py-4">Gapl Direct Sales</h4>
+
+<div class="card mt-2 py-2">
+    <div class="table-responsive text-nowrap mt-2">
+        <table class="table py-3" id="example">
+            <thead>
+                <tr>
+                    <th>Invoice Date</th>
+                    <th>Invoice No</th>
+                    <th>Generate irn</th>
+<!--                    <th>Generate QR</th>-->
+                    <th>Eway Bill</th>
+                    <th>Party Name</th>
+                    <th>IRN</th>
+                    <th>IRN STATUS</th>
+
+                </tr>
+            </thead>
+            <tbody class="table-border-bottom-0">
+                {% for field in response_data %}
+                    <tr>
+                        <td>{{field.dt}}</td>
+                        <td>{{field.no}}</td>
+                     <td>
+                          {% if field.status == "Pending" %}
+                            <a href="{% url 'gapl_generate_irn' field.no %}" class="btn btn-sm btn-info">GENERATE IRN</a>
+
+                           {% elif field.status == "Cancelled" %}
+                          <a href="" class="btn btn-sm btn-dark">{{field.status}}</a>
+                          {% else %}
+                            <a href="{% url 'gapl_cancel_irn' field.irn %}" class="btn btn-sm btn-danger">CANCEL IRN</a>
+                        {% endif %}
+                        </td>
+
+                        <td><a href="" class="btn btn-sm btn-warning">GENERATE EWAY Bill</a></td>
+                        <td>{{field.blglNm}}</td>
+                        <td>{{field.irn}}</td>
+                        {% if field.status == "Generated" %}
+                        <td><span class="badge rounded-pill bg-label-success">{{field.status}}</span></td>
+                         {% else %}
+                        <td><span class="badge rounded-pill bg-label-danger">{{field.status}}</span></td>
+                         {% endif %}
+
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="content-wrapper">
+    <div class="container-xxl flex-grow-1 container-p-y">
+
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == "error" %}
+                <div role="alert" aria-live="assertive" aria-atomic="true" data-delay="2000"
+                     class="bs-toast toast toast-placement-ex m-2 bg-danger top-0 end-0 fade show">
+                    <div class="toast-header">
+                        <i class='bx bxs-error-alt'></i>&nbsp;
+                        <div class="me-auto fw-semibold">Error</div>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">{{ message }}</div>
+                </div>
+                {% elif message.tags == "success" %}
+                <div role="alert" aria-live="assertive" aria-atomic="true" data-delay="2000"
+                     class="bs-toast toast toast-placement-ex m-2 bg-success top-0 end-0 fade show">
+                    <div class="toast-header">
+                        <i class='bx bx-list-check'></i>&nbsp;
+                        <div class="me-auto fw-semibold">Success</div>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">{{ message }}</div>
+                </div>
+                {% elif message.tags == "info" %}
+                <div role="alert" aria-live="assertive" aria-atomic="true" data-delay="2000"
+                     class="bs-toast toast toast-placement-ex m-2 bg-info top-0 end-0 fade show">
+                    <div class="toast-header">
+                        <i class='bx bx-list-check'></i>&nbsp;
+                        <div class="me-auto fw-semibold">info</div>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">{{ message }}</div>
+                </div>
+
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
+
+    </div>
+</div>
+
+
+<!-- / Content -->
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src=" https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+    // new DataTable('#example');
+
+
+    new DataTable('#example', {
+        order: [[3, 'desc']]
+    });
+</script>
+
+<!-- Core JS -->
+<!-- build:js assets/vendor/js/core.js -->
+<script src="{% static 'assets/vendor/libs/jquery/jquery.js' %} "></script>
+<script src="{% static 'assets/vendor/libs/popper/popper.js' %}"></script>
+<script src="{% static 'assets/vendor/js/bootstrap.js' %}"></script>
+<script src="{% static 'assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js' %}"></script>
+
+<script src="{% static 'assets/vendor/js/menu.js' %}"></script>
+<!-- endbuild -->
+
+<!-- Vendors JS -->
+
+<!-- Main JS -->
+<script src="{% static 'assets/js/main.js' %}"></script>
+
+<!-- Page JS -->
+
+<!-- Place this tag in your head or just before your close body tag. -->
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+</body>
+
+
+</html>

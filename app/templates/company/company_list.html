@@ -1,0 +1,43 @@
+
+{% extends "base.html" %}
+{% block content %}
+
+
+<h4 class="fw-bold py-2">Company List</h4>
+
+
+<a href="{% url 'auth_login_admin' %}" class="btn btn-primary">
+    <span class="tf-icons bx bx-list-plus"></span>&nbsp; Add / Update
+</a>
+
+
+
+
+<div class="card mt-4 py-3">
+    <div class="table-responsive text-nowrap mt-2">
+        <table class="table py-3" id="example">
+            <thead>
+                <tr>
+                    <th>Email</th>
+                    <th>Company Id</th>
+                    <th>Company Name</th>
+                    <th>UserGSTIN</th>
+                    <th>API URl</th>
+                </tr>
+            </thead>
+            <tbody class="table-border-bottom-0">
+                {% for field in all_data %}
+                    <tr>
+                        <td>{{field.email}}</td>
+                        <td>{{field.company_id}}</td>
+                        <td>{{field.company_name}}</td>
+                        <td>{{field.user_gstin}}</td>
+                        <td>{{field.api_url}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock content %}

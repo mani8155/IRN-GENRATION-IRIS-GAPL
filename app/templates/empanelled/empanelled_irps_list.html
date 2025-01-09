@@ -1,0 +1,49 @@
+
+{% extends "base.html" %}
+{% block content %}
+
+
+<h4 class="fw-bold py-2">Empanelled IRPs List</h4>
+
+
+<a href="{% url 'empanelled_irps_form' %}" class="btn btn-primary">
+    <span class="tf-icons bx bx-list-plus"></span>&nbsp; Add New
+</a>
+
+
+
+
+<div class="card mt-4 py-3">
+    <div class="table-responsive text-nowrap mt-2">
+        <table class="table py-3" id="example">
+            <thead>
+                <tr>
+                    <th>IRP NAME</th>
+                    <th>URL TYPE</th>
+                    <th>URL LINK</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody class="table-border-bottom-0">
+                {% for field in obj %}
+                    <tr>
+                        <td>{{field.irp_name}}</td>
+                        {% if field.url_type == 'development' %}
+                           <td><span class="badge rounded-pill bg-label-warning">development</span></td>
+                        {% else %}
+                           <td><span class="badge rounded-pill bg-label-success">production</span></td>
+                        {% endif %}
+
+                        <td><a href="{{ field.url_link }}" target="_blank">{{ field.url_link }}</a></td>
+
+                        <td>
+                            <a href="{% url 'edit_empanelled_irps' field.id %}" class="btn btn-sm btn-primary" ><i class='bx bxs-edit'></i></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock content %}

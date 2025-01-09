@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h4 class="fw-bold py-2 mb-4">Form</h4>
+
+<div class="card mb-4">
+  <div class="card-body">
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="mb-3" id="dbCol">
+            <label class="form-label">IRP Name</label>
+            <select class="form-control" id="id_irp" name="irp_name" onchange="irpNameOnchnage(this)">
+                <option selected="" value="">---------</option>
+                {% for irpname in empanelled_irps %}
+                <option value="{{irpname}}">{{irpname}}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-3" id="dbCol">
+            <label class="form-label">API URL</label>
+            <select class="form-control" id="id_schema" name="api_url">
+                <option selected="" value="">---------</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="email" class="form-label">Company UserGSTIN</label>
+            <input type="text" class="form-control" id="user_gstin" name="user_gstin"
+                   placeholder="Enter your usergstin number"
+            />
+        </div>
+
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="text" class="form-control" id="email" name="email"
+                   placeholder="Enter your email"
+                   autofocus
+            />
+        </div>
+
+        <div class="mb-3 form-password-toggle">
+            <div class="d-flex justify-content-between">
+                <label class="form-label" for="password">Password</label>
+                <a href="{% url 'forgot_password' %}">
+                    <small>Forgot Password?</small>
+                </a>
+            </div>
+
+            <div class="input-group input-group-merge">
+                <input
+                        type="password"
+                        id="password"
+                        class="form-control"
+                        name="password"
+                        placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                        aria-describedby="password"
+                />
+                <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+
+    </form>
+
+
+  </div>
+</div>
+</div>
+
+
+
+<!-- / Content -->
+
+<script>
+    function irpNameOnchnage(element){
+        let  irpName = element.value
+
+
+    $.ajax({
+        type: 'GET',
+        url: "{% url 'get_api_urls' %}",
+        data: {'irpName':irpName},
+        success: function (data) {
+
+            let apiurlsvalue = data['api_urls'];
+            console.log(apiurlsvalue);
+
+            apiurlsData = apiurlsvalue;
+            let schema = document.getElementById('id_schema');
+            schema.innerHTML = "";
+            schema.innerHTML = `<option value="" selected="">---------</option>`;
+
+            for (let i = 0; i < apiurlsData.length; i++) {
+                schema.innerHTML += `<option value="${apiurlsData[i]}">${apiurlsData[i]}</option>`;
+            }
+
+        }
+
+        })
+
+
+    }
+
+
+
+</script>
+
+{% endblock content %}
